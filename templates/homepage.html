@@ -2,10 +2,25 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FakePinterest</title>
+    <title>
+        {% block titulo %}
+        # O endblock indica o final do bloco 'titulo
+
+        FakePinterest
+
+        # O endblock indica o final do bloco 'titulo
+        {% endblock %}
+    </title>
 </head>
+
+{% block body %}
+# O bloco 'body' permite personalizar o conteúdo principal em páginas que utilizem este template como base
 <body>
+
 <h1>FakePinterest - Meu primeiro site no ar</h1>
 <p>Agora vamos continuar nosso site</p>
+
 </body>
+{% endblock %}
+
 </html>
