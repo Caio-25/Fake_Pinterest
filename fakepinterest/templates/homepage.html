@@ -1,0 +1,33 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        {% block titulo %}
+            FakePinterest
+        {% endblock %}
+    </title>
+</head>
+
+<body>
+
+    {% block body %}
+
+    {#
+        Este bloco permite personalizar o conteúdo principal
+        em outras páginas que utilizam este template como base.
+    #}
+
+    <h1>FakePinterest - Meu primeiro site no ar</h1>
+
+    <p>Agora vamos continuar nosso site</p>
+
+    {% endblock %}
+
+</body>
+
+</html>
+```
