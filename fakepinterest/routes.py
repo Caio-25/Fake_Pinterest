@@ -5,6 +5,8 @@ from flask import render_template
 # Importa a aplicação Flask.
 from fakepinterest import app
 
+from flask_login import login_required
+
 
 # Define a rota da página inicial.
 @app.route("/")
@@ -15,6 +17,7 @@ def homepage():
 
 # Define a rota da página de perfil.
 @app.route("/perfil/<usuario>")
+@login_required
 def perfil(usuario):
     # Carrega o template do perfil e envia o nome do usuário.
     return render_template("Perfil.html", usuario=usuario)

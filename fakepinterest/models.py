@@ -1,22 +1,61 @@
-# Importa o objeto database criado na aplicação Flask.
-# Ele permite definir os modelos e as tabelas do banco de dados.
-from fakepinterest import database
-# Importa datetime para trabalhar com datas e horários.
+from fakepinterest import database, login_manager
+
 from datetime import datetime, timezone
 
-# Cria o modelo Usuario, que representa a tabela de usuários no
-class Usuario(database.Model):
-    # Cria a coluna id, que identifica cada usuário de forma única.
-    id = database.Column(database.Integer, primary_key=True)
-    username = database.Column(database.Integer, primary_key=True)
-    email = database.Column(database.String(150), nullable=False)
-    senha = database.Column (database.String(255), nullable=False)
-    fotos = database.relationship("Foto",backref="Usuario", lazy=True)
+from flask_login import UserMixin
 
-# Cria o modelo Foto, que representa a tabela de fotos no banco de dados.
+
+# Carrega um usuário a partir do seu ID durante a autenticação.
+@login_manager.user_loader
+def load_usuario(id_usuario):
+    return database.session.get(Usuario, int(id_usuario))
+
+
+# Representa a tabela de usuários no banco de dados.
+class Usuario(database.Model, UserMixin):
+
+    # Identificador único de cada usuário.
+    id = database.Column(database.Integer, primary_key=True)
+
+    # Nome de usuário armazenado como texto e sem duplicações.
+    username = database.Column(
+        database.String(100),
+        nullable=False,
+        unique=True
+    )
+
+    # E-mail obrigatório.
+    email = database.Column(database.String(150), nullable=False)
+
+    # Campo para armazenar o hash da senha.
+    senha = database.Column(database.String(255), nullable=False)
+
+    # Relacionamento entre usuários e suas fotos.
+    fotos = database.relationship("Foto", backref="usuario", lazy=True)
+
+
+# Representa a tabela de fotos no banco de dados.
 class Foto(database.Model):
 
-    id = database.Column(database.Integer,primary_key=True)
-    imagem = database.Column(database.String(255), default="default.png")
-    data_criacao = database.Column(database.DateTime(timezone=True),nullable=False,default=lambda: datetime.now(timezone.utc))
-    id_usuario = database.Column(database.Integer,database.ForeignKey('usuario.id'), nullable=False)
+    # Identificador único da foto.
+    id = database.Column(database.Integer, primary_key=True)
+
+    # Nome ou caminho do arquivo da imagem.
+    imagem = database.Column(
+        database.String(255),
+        default="default.png"
+    )
+
+    # Data e hora de criação da foto.
+    data_criacao = database.Column(
+        database.DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    # Identifica o usuário proprietário da foto.
+    id_usuario = database.Column(
+        database.Integer,
+        database.ForeignKey("usuario.id"),
+        nullable=False
+    )
